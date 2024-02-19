@@ -8,8 +8,16 @@ Renderer::Renderer(Shader* shader)
 {
 }
 
-void Renderer::DrawTriangle(const float* vertices, const unsigned int& size)
+void Renderer::DrawTriangle()
 {
+    float vertices[] = {
+               0.5f, -0.5f, 0.0f,       0.0f, 0.0f, 1.0f,      1.0f, 0.0f,
+               -0.5f, -0.5f, 0.0f,      0.0f, 1.0f, 0.0f,      0.0f, 0.0f,
+               0.0f, 0.5f, 0.0f,        1.0f, 0.0f, 0.0f,      0.0f, 1.0f
+    };
+
+    float size = sizeof(vertices);
+    
     VertexArray va = VertexArray();
     VertexBuffer vb = VertexBuffer(vertices, size);
     va.Bind();
@@ -29,9 +37,23 @@ void Renderer::DrawTriangle(const float* vertices, const unsigned int& size)
     vb.Unbind();
 }
 
-void Renderer::DrawRectangle(const float* vertices, const unsigned int& size, 
-    const unsigned int* indices, const unsigned int& count)
+void Renderer::DrawRectangle()
 {
+    float vertices[] = {
+            0.5f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f,       0.0f, 0.0f,
+            0.5f, -0.5f, 0.0f,      0.0f, 1.0f, 0.0f,       1.0f, 0.0f,
+            -0.5f, -0.5f, 0.0f,        1.0f, 0.0f, 0.0f,       1.0f, 0.5f,
+            -0.5f,  0.5f, 0.0f,      0.0f, 1.0f, 1.0f,       0.0f, 0.5f
+    };
+
+    unsigned int indices[] = {
+        0, 1, 3,
+        1, 2, 3
+    };
+
+    float size = sizeof(vertices);
+    unsigned int count = 6;
+
     VertexArray va = VertexArray();
     VertexBuffer vb = VertexBuffer(vertices, size);
     va.Bind();
@@ -54,4 +76,71 @@ void Renderer::DrawRectangle(const float* vertices, const unsigned int& size,
     vb.Unbind();
     va.Unbind();
     ib.Unbind();
+}
+
+void Renderer::DrawCube()
+{
+    float vertices[] = {
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+     0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+     0.5f,  0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+    -0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+     0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+
+    -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+    -0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+
+     0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+     0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+     0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+     0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+     0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+
+    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+     0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+     0.5f, -0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+     0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+    -0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+    -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+
+    -0.5f,  0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+     0.5f,  0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+     0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+     0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+    -0.5f,  0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+    -0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f
+    };
+    
+    float size = sizeof(vertices);
+
+    VertexArray va = VertexArray();
+    VertexBuffer vb = VertexBuffer(vertices, size);
+    va.Bind();
+
+    VertexBufferLayout layout = VertexBufferLayout();
+    layout.SetAttribute(GL_FLOAT, 3, GL_FALSE);
+    layout.SetAttribute(GL_FLOAT, 3, GL_FALSE);
+    layout.SetAttribute(GL_FLOAT, 2, GL_FALSE);
+
+    va.LinkVertexBuffer(vb, layout);
+
+    m_Shader->Activate();
+
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    va.Unbind();
+    vb.Unbind();
 }
