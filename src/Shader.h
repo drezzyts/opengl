@@ -25,6 +25,7 @@ class Shader
     ~Shader();
 
     void SetFloat(const char* target, const float& value);
+    void SetFloat4fv(const char* target, const float* values);
     void SetMat4f(const char* target, const glm::mat4 translation);
 
     void Activate();

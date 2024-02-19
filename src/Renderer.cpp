@@ -17,6 +17,7 @@ void Renderer::DrawTriangle(const float* vertices, const unsigned int& size)
     VertexBufferLayout layout = VertexBufferLayout();
     layout.SetAttribute(GL_FLOAT, 3, GL_FALSE);
     layout.SetAttribute(GL_FLOAT, 3, GL_FALSE);
+    layout.SetAttribute(GL_FLOAT, 2, GL_FALSE);
 
     va.LinkVertexBuffer(vb, layout);
     
@@ -38,6 +39,7 @@ void Renderer::DrawRectangle(const float* vertices, const unsigned int& size,
     VertexBufferLayout layout = VertexBufferLayout();
     layout.SetAttribute(GL_FLOAT, 3, GL_FALSE);
     layout.SetAttribute(GL_FLOAT, 3, GL_FALSE);
+    layout.SetAttribute(GL_FLOAT, 2, GL_FALSE);
 
     va.LinkVertexBuffer(vb, layout);
 

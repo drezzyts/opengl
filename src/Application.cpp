@@ -15,6 +15,7 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Renderer.h"
+#include "Texture.h"
 
 void FrameBufferSizeCallback(GLFWwindow* window, int width, int height)
 {
@@ -58,17 +59,18 @@ int main()
     ImGui_ImplOpenGL3_Init("#version 330");
     
     float triangleVertices[] = {
-            0.5f, -0.5f, 0.0f,       0.0f, 0.0f, 1.0f,
-            -0.5f, -0.5f, 0.0f,      0.0f, 1.0f, 0.0f,
-            0.0f, 0.5f, 0.0f,        1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.0f,       0.0f, 0.0f, 1.0f,      1.0f, 0.0f, 
+            -0.5f, -0.5f, 0.0f,      0.0f, 1.0f, 0.0f,      0.0f, 0.0f,
+            0.0f, 0.5f, 0.0f,        1.0f, 0.0f, 0.0f,      0.0f, 1.0f
     };
 
     float rectangleVertices[] = { 
-            -0.5f, -0.5f, 0.0f,     0.0f, 0.0f, 1.0f,
-            0.5f, -0.5f, 0.0f,      0.0f, 1.0f, 0.0f,
-            0.5, 0.0f, 0.0f,        1.0f, 0.0f, 0.0f,
-            -0.5f, 0.0f, 0.0f,      0.0f, 1.0f, 1.0f,
+            -0.5f, -0.5f, 0.0f,     0.0f, 0.0f, 1.0f,       0.0f, 0.0f,
+            0.5f, -0.5f, 0.0f,      0.0f, 1.0f, 0.0f,       1.0f, 0.0f,
+            0.5, 0.0f, 0.0f,        1.0f, 0.0f, 0.0f,       1.0f, 0.5f,
+            -0.5f, 0.0f, 0.0f,      0.0f, 1.0f, 1.0f,       0.0f, 0.5f
     };
+
 
     unsigned int indices[] = {
         0, 1, 3,
@@ -77,15 +79,39 @@ int main()
 
     bool drawTriangle = true;
     bool drawRectangle = false;
+    
+    bool useRainbow = true;
+    bool useTexture = false;
+    bool useInputColor = false;
 
     float size = 1.0f;
     float position[] = { 0.0f, 0.0f };
+    float inputColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     Shader shader = Shader("res\\shaders\\default.vert", "res\\shaders\\default.frag");
     Renderer renderer = Renderer(&shader);
 
+    int selectedTexture = 0;
+    const char* textures[] = { "Bricks", "Stone", "Wood Planks" };
+
+
     while (!glfwWindowShouldClose(window)) 
     {
+        Texture* texture = nullptr;
+
+        switch (selectedTexture)
+        {
+        case 0:
+            texture = new Texture("res\\textures\\bricks.jpg");
+            break;
+        case 1:
+            texture = new Texture("res\\textures\\stone.jpg");
+            break;
+        case 2:
+            texture = new Texture("res\\textures\\wood-planks.jpg");
+            break;
+        }
+
         glClearColor(0.1f, 0.1f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -109,10 +135,24 @@ int main()
         
         if (ImGui::CollapsingHeader("Transform"))
         {
-            ImGui::DragFloat("X", &position[0], 0.05f, -2.0f, 2.0f, "X: %.3f");
-            ImGui::DragFloat("Y", &position[1], 0.05f, -2.0f, 2.0f, "Y: %.3f");
-            ImGui::SliderFloat("Size Scallar", &size, 0.1f, 2.0f);
+            ImGui::DragFloat("X Axis", &position[0], 0.05f, -2.0f, 2.0f, "X: %.3f");
+            ImGui::DragFloat("Y Axis", &position[1], 0.05f, -2.0f, 2.0f, "Y: %.3f");
+            ImGui::SliderFloat("Size", &size, 0.1f, 2.0f);
         };
+
+        if (ImGui::CollapsingHeader("Style"))
+        {
+            ImGui::ColorEdit4("Color", inputColor);
+            ImGui::Combo("Texture", &selectedTexture, textures, 3);
+        }
+
+        if (ImGui::CollapsingHeader("Config"))
+        {
+            ImGui::Checkbox("Rainbow", &useRainbow);
+            ImGui::Checkbox("Texture", &useTexture);
+            ImGui::Checkbox("InputColor", &useInputColor);
+            ImGui::ShowStyleSelector("Theme");
+        }
 
         ImGui::End();
         
@@ -122,12 +162,19 @@ int main()
 
         shader.SetMat4f("transform", trans);
         shader.SetFloat("size", size);
+        shader.SetFloat4fv("inputColor", inputColor);
+
+        shader.SetFloat("useTexture", useTexture);
+        shader.SetFloat("useInputColor", useInputColor);
+        shader.SetFloat("useRainbow", useRainbow);
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        delete texture;
     }
 
     ImGui_ImplOpenGL3_Shutdown();

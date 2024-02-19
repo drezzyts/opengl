@@ -34,8 +34,5 @@ imgui.ini
 *.app
 
 # Editor files
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
 .vs
-.vscode/*
+.vscode

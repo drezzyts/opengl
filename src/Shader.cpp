@@ -21,6 +21,8 @@ void Shader::ReadShaderFile(const char* path, std::string *pointer)
 
 void Shader::CompileShader(const std::string& source, const ShaderType type, unsigned int* shader)
 {
+  std::string name = type == ShaderType::Fragment ? "Fragment" : "Vertex";
+  
   const char* code = source.c_str();
   *shader = glCreateShader(type);
 
@@ -32,8 +34,9 @@ void Shader::CompileShader(const std::string& source, const ShaderType type, uns
 
   glGetShaderiv(*shader, GL_COMPILE_STATUS, &success);
   if (!success) {
-      glGetProgramInfoLog(*shader, 512, NULL, infoLog);
-      std::cerr << "[error]: Shader compiled failed" << type << "\n" << infoLog << std::endl;
+      glGetShaderInfoLog(*shader, 512, NULL, infoLog);
+
+      std::cerr << "[error]: Shader compiled failed (" << name << ")" << "\n" << infoLog << std::endl;
   }
 }
 
@@ -74,12 +77,17 @@ Shader::~Shader()
 
 void Shader::SetFloat(const char* target, const float& value)
 {
-  glUniform1f(glGetUniformLocation(m_ShaderProgramId, target), value);
+    glUniform1f(glGetUniformLocation(m_ShaderProgramId, target), value);
+}
+
+void Shader::SetFloat4fv(const char* target, const float* values)
+{
+    glUniform4fv(glGetUniformLocation(m_ShaderProgramId, target), 1, values);
 }
 
 void Shader::SetMat4f(const char* target, const glm::mat4 translation)
 {
-    glUniformMatrix4fv(glGetUniformLocation(m_ShaderProgramId, target), 1, GL_FALSE, glm::value_ptr(translation));
+   glUniformMatrix4fv(glGetUniformLocation(m_ShaderProgramId, target), 1, GL_FALSE, glm::value_ptr(translation));
 }
 
 void Shader::Activate()
